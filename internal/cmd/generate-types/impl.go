@@ -54,7 +54,8 @@ protowire.Size{{.WireType}}({{.FromValue}})
 */ -}}
 {{- define "Append" -}}
 {{- if eq .Name "String" -}}
-b = protowire.AppendString(b, {{.FromGoType}})
+s := {{.FromGoType}}
+b = protowire.AppendString(b, s)
 {{- else -}}
 b = protowire.Append{{.WireType}}(b, {{.FromGoType}})
 {{- end -}}
@@ -62,7 +63,8 @@ b = protowire.Append{{.WireType}}(b, {{.FromGoType}})
 
 {{- define "AppendValue" -}}
 {{- if eq .Name "String" -}}
-b = protowire.AppendString(b, {{.FromValue}})
+s := {{.FromValue}}
+b = protowire.AppendString(b, s)
 {{- else -}}
 b = protowire.Append{{.WireType}}(b, {{.FromValue}})
 {{- end -}}

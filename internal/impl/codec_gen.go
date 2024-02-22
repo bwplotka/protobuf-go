@@ -5013,7 +5013,8 @@ func sizeString(p pointer, f *coderFieldInfo, opts marshalOptions) (size int) {
 func appendString(b []byte, p pointer, f *coderFieldInfo, opts marshalOptions) ([]byte, error) {
 	v := *p.String()
 	b = protowire.AppendVarint(b, f.wiretag)
-	b = protowire.AppendString(b, v)
+	s := v
+	b = protowire.AppendString(b, s)
 	return b, nil
 }
 
@@ -5042,7 +5043,8 @@ var coderString = pointerCoderFuncs{
 func appendStringValidateUTF8(b []byte, p pointer, f *coderFieldInfo, opts marshalOptions) ([]byte, error) {
 	v := *p.String()
 	b = protowire.AppendVarint(b, f.wiretag)
-	b = protowire.AppendString(b, v)
+	s := v
+	b = protowire.AppendString(b, s)
 	if !utf8.ValidString(v) {
 		return b, errInvalidUTF8{}
 	}
@@ -5091,7 +5093,8 @@ func appendStringNoZero(b []byte, p pointer, f *coderFieldInfo, opts marshalOpti
 		return b, nil
 	}
 	b = protowire.AppendVarint(b, f.wiretag)
-	b = protowire.AppendString(b, v)
+	s := v
+	b = protowire.AppendString(b, s)
 	return b, nil
 }
 
@@ -5110,7 +5113,8 @@ func appendStringNoZeroValidateUTF8(b []byte, p pointer, f *coderFieldInfo, opts
 		return b, nil
 	}
 	b = protowire.AppendVarint(b, f.wiretag)
-	b = protowire.AppendString(b, v)
+	s := v
+	b = protowire.AppendString(b, s)
 	if !utf8.ValidString(v) {
 		return b, errInvalidUTF8{}
 	}
@@ -5136,7 +5140,8 @@ func sizeStringPtr(p pointer, f *coderFieldInfo, opts marshalOptions) (size int)
 func appendStringPtr(b []byte, p pointer, f *coderFieldInfo, opts marshalOptions) ([]byte, error) {
 	v := **p.StringPtr()
 	b = protowire.AppendVarint(b, f.wiretag)
-	b = protowire.AppendString(b, v)
+	s := v
+	b = protowire.AppendString(b, s)
 	return b, nil
 }
 
@@ -5170,7 +5175,8 @@ var coderStringPtr = pointerCoderFuncs{
 func appendStringPtrValidateUTF8(b []byte, p pointer, f *coderFieldInfo, opts marshalOptions) ([]byte, error) {
 	v := **p.StringPtr()
 	b = protowire.AppendVarint(b, f.wiretag)
-	b = protowire.AppendString(b, v)
+	s := v
+	b = protowire.AppendString(b, s)
 	if !utf8.ValidString(v) {
 		return b, errInvalidUTF8{}
 	}
@@ -5219,7 +5225,8 @@ func appendStringSlice(b []byte, p pointer, f *coderFieldInfo, opts marshalOptio
 	s := *p.StringSlice()
 	for _, v := range s {
 		b = protowire.AppendVarint(b, f.wiretag)
-		b = protowire.AppendString(b, v)
+		s := v
+		b = protowire.AppendString(b, s)
 	}
 	return b, nil
 }
@@ -5251,7 +5258,8 @@ func appendStringSliceValidateUTF8(b []byte, p pointer, f *coderFieldInfo, opts 
 	s := *p.StringSlice()
 	for _, v := range s {
 		b = protowire.AppendVarint(b, f.wiretag)
-		b = protowire.AppendString(b, v)
+		s := v
+		b = protowire.AppendString(b, s)
 		if !utf8.ValidString(v) {
 			return b, errInvalidUTF8{}
 		}
@@ -5292,7 +5300,8 @@ func sizeStringValue(v protoreflect.Value, tagsize int, opts marshalOptions) int
 // appendStringValue encodes a string value as a String.
 func appendStringValue(b []byte, v protoreflect.Value, wiretag uint64, opts marshalOptions) ([]byte, error) {
 	b = protowire.AppendVarint(b, wiretag)
-	b = protowire.AppendString(b, v.String())
+	s := v.String()
+	b = protowire.AppendString(b, s)
 	return b, nil
 }
 
@@ -5319,7 +5328,8 @@ var coderStringValue = valueCoderFuncs{
 // appendStringValueValidateUTF8 encodes a string value as a String.
 func appendStringValueValidateUTF8(b []byte, v protoreflect.Value, wiretag uint64, opts marshalOptions) ([]byte, error) {
 	b = protowire.AppendVarint(b, wiretag)
-	b = protowire.AppendString(b, v.String())
+	s := v.String()
+	b = protowire.AppendString(b, s)
 	if !utf8.ValidString(v.String()) {
 		return b, errInvalidUTF8{}
 	}
@@ -5365,7 +5375,8 @@ func appendStringSliceValue(b []byte, listv protoreflect.Value, wiretag uint64, 
 	for i, llen := 0, list.Len(); i < llen; i++ {
 		v := list.Get(i)
 		b = protowire.AppendVarint(b, wiretag)
-		b = protowire.AppendString(b, v.String())
+		s := v.String()
+		b = protowire.AppendString(b, s)
 	}
 	return b, nil
 }
