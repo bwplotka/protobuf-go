@@ -39,11 +39,7 @@ func messageAPILevel(md protoreflect.MessageDescriptor, def gofeaturespb.GoFeatu
 }
 
 func (p *Plugin) defaultAPILevel() gofeaturespb.GoFeatures_APILevel {
-	if p.opts.HybridDefault {
-		return gofeaturespb.GoFeatures_API_HYBRID
-	}
-
-	return gofeaturespb.GoFeatures_API_OPEN
+	return p.opts.APILevel()
 }
 
 // MethodName returns the (possibly mangled) name of the generated accessor

@@ -19,6 +19,7 @@ import (
 	gengo "google.golang.org/protobuf/cmd/protoc-gen-go/internal_gengo"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/internal/version"
+	"google.golang.org/protobuf/types/gofeaturespb"
 )
 
 const genGoDocURL = "https://protobuf.dev/reference/go/go-generated"
@@ -34,18 +35,29 @@ func main() {
 		os.Exit(0)
 	}
 
+	const defaultAPILevel = gofeaturespb.GoFeatures_API_OPEN
+
 	var (
 		flags                                 flag.FlagSet
 		plugins                               = flags.String("plugins", "", "deprecated option")
 		experimentalStripNonFunctionalCodegen = flags.Bool("experimental_strip_nonfunctional_codegen", false, "experimental_strip_nonfunctional_codegen true means that the plugin will not emit certain parts of the generated code in order to make it possible to compare a proto2/proto3 file with its equivalent (according to proto spec) editions file. Primarily, this is the encoded descriptor.")
+		// TODO(bwplotka): Probably there should be a generic per message/file option switching.
+		experimentalDefaultAPILevel = flags.String("experimental_default_api_level", gofeaturespb.GoFeatures_APILevel_name[int32(defaultAPILevel)], "What API to use for generation by default. Available options: API_OPEN, API_HYBRID, API_OPAQUE.")
 	)
 	protogen.Options{
 		ParamFunc:                    flags.Set,
 		InternalStripForEditionsDiff: experimentalStripNonFunctionalCodegen,
+		APILevel: func() gofeaturespb.GoFeatures_APILevel {
+			a, ok := gofeaturespb.GoFeatures_APILevel_value[*experimentalDefaultAPILevel]
+			if !ok || a == int32(gofeaturespb.GoFeatures_API_LEVEL_UNSPECIFIED) {
+				return defaultAPILevel
+			}
+			return gofeaturespb.GoFeatures_APILevel(a)
+		},
 	}.Run(func(gen *protogen.Plugin) error {
 		if *plugins != "" {
 			return errors.New("protoc-gen-go: plugins are not supported; use 'protoc --go-grpc_out=...' to generate gRPC\n\n" +
-				"See " + grpcDocURL + " for more information.")
+					"See " + grpcDocURL + " for more information.")
 		}
 		for _, f := range gen.Files {
 			if f.Generate {

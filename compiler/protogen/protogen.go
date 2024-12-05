@@ -167,8 +167,9 @@ type Options struct {
 	// we might remove it at any time.
 	InternalStripForEditionsDiff *bool
 
-	// HybridDefault overrides the default API level with the Hybrid API.
-	HybridDefault bool
+	// APILevel overrides the default API level.
+	// This struct field is for internal use by Go Protobuf only. We might remove it at any time.
+	APILevel func() gofeaturespb.GoFeatures_APILevel
 }
 
 // New returns a new Plugin.
